@@ -35,3 +35,32 @@ def get_contact(current_user_token):
     response = cars_schema.dump(cars)
     return jsonify(response)
 
+@api.route('/my_cars/<id>', methods = ['GET'])
+@token_required
+def get_single_car(current_user_token, id):
+    car = Car.query.get(id)
+    response = car_schema.dump(car)
+    return jsonify(response)
+
+@api.route('/my_cars/<id>', methods = ['PUT', 'POST'])
+@token_required
+def update_car(current_user_token, id):
+    car = Car.query.get(id)
+    car.year = request.json['year']
+    car.make = request.json['make']
+    car.model = request.json['model']
+    car.color = request.json['color']
+    car.user_token = current_user_token.token
+
+    db.session.commit()
+    response = car_schema.dump(car)
+    return jsonify(response)
+
+@api.route('/my_cars/<id>', methods = ['DELETE'])
+@token_required
+def delete_car(current_user_token, id):
+    car = Car.query.get(id)
+    db.session.delete(car)
+    db.session.commit()
+    response = car_schema.dump(car)
+    return jsonify(response)

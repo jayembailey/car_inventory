@@ -35,11 +35,9 @@ def signin():
             print(f'signin: {email} {password}')
 
             logged_user = User.query.filter(User.email == email).first()
-            print(logged_user.password)
-            print(check_password_hash(logged_user.password, password))
+
             if logged_user and check_password_hash(logged_user.password, password):
                 login_user(logged_user)
-                print('signed in')
                 flash('Welcome back!', 'auth-success')
                 return redirect(url_for('site.profile'))
             else:
